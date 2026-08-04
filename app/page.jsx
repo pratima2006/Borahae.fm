@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
 
 export default function Home() {
   const [pfp, setPfp] = useState("");
@@ -12,43 +11,47 @@ export default function Home() {
   ];
 
   return (
-    <main style={{background:'#fff', minHeight:'100vh', padding:'16px', fontFamily:'Poppins'}}>
-      <header style={{display:'flex', justifyContent:'space-between'}}>
-        <h1 style={{color:'#8000FF', fontWeight:'bold'}}>borahae.fm 💜</h1>
-        <Link href="/missions" style={{background:'#8000FF', color:'white', padding:'8px 12px', borderRadius:'8px'}}>Missions</Link>
-      </header>
+    <main style={{background:'linear-gradient(180deg, #F5F0FF 0%, #FFFFFF 100%)', minHeight:'100vh', padding:'16px', fontFamily:'Poppins'}}>
+      <h1 style={{color:'#8000FF', fontWeight:'bold', fontSize:'24px', textAlign:'center'}}>borahae.fm 💜</h1>
 
-      {/* PFP Section */}
+      {/* PFP - chota kiya */}
       <div style={{textAlign:'center', margin:'20px 0'}}>
-        <img src={pfp || "https://via.placeholder.com/100"} style={{width:'100px', height:'100px', borderRadius:'50%', border:'3px solid #8000FF'}} />
-        <br/>
-        <input type="file" onChange={(e)=> setPfp(URL.createObjectURL(e.target.files[0]))} style={{marginTop:'8px'}}/>
+        <img src={pfp || "https://i.pravatar.cc/100"} style={{width:'80px', height:'80px', borderRadius:'50%', border:'4px solid #8000FF', boxShadow:'0 0 15px #8000FF'}} />
+        <p style={{fontSize:'12px', color:'#666', marginTop:'5px'}}>Settings me PFP change karo</p>
       </div>
 
-      {/* 4 Boxes */}
-      <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px', marginBottom:'20px'}}>
-        <div style={{border:'1px solid #ddd', padding:'10px', borderRadius:'10px', textAlign:'center'}}>7/17<br/><small>Missions</small></div>
-        <div style={{border:'1px solid #ddd', padding:'10px', borderRadius:'10px', textAlign:'center'}}>102<br/><small>Total Stream</small></div>
-        <div style={{border:'1px solid #ddd', padding:'10px', borderRadius:'10px', textAlign:'center'}}>5 Days<br/><small>Streak</small></div>
-        <div style={{border:'1px solid #ddd', padding:'10px', borderRadius:'10px', textAlign:'center'}}>Jungkook<br/><small>Top Artist</small></div>
-      </div>
-
-      {/* Recent 7 MVs */}
-      <h2 style={{fontWeight:'bold'}}>Recently Streamed</h2>
-      {recentVids.map(v => (
-        <div key={v.id} style={{border:'2px solid #8000FF', borderRadius:'12px', padding:'10px', margin:'10px 0', display:'flex'}}>
-          <img src={`https://img.youtube.com/vi/${v.id}/0.jpg`} style={{width:'80px', borderRadius:'8px'}}/>
-          <div style={{marginLeft:'10px'}}>
-            <b>{v.title}</b><br/>
-            <small>{v.channel}</small><br/>
-            <span style={{color:'#8000FF', fontWeight:'bold'}}>x{v.times}</span>
+      {/* 4 Purple Boxes */}
+      <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px', marginBottom:'20px'}}>
+        {["7/17 Missions", "102 Total Stream", "5 Days Streak", "Jungkook Top Artist"].map((item,i) => (
+          <div key={i} style={{background:'white', border:'2px solid #E0D4FF', padding:'15px', borderRadius:'16px', textAlign:'center', boxShadow:'0 4px 10px rgba(128,0,255,0.1)'}}>
+            <b style={{color:'#8000FF', fontSize:'18px'}}>{item.split(" ")[0]}</b><br/>
+            <small>{item.split(" ").slice(1).join(" ")}</small>
           </div>
-        </div>
+        ))}
+      </div>
+
+      <h2 style={{fontWeight:'bold', color:'#333'}}>Recently Streamed</h2>
+      {recentVids.map(v => (
+        <a key={v.id} href={`https://youtube.com/watch?v=${v.id}`} target="_blank" 
+           style={{textDecoration:'none', color:'black'}}>
+          <div style={{background:'white', border:'2px solid #8000FF', borderRadius:'16px', padding:'12px', margin:'12px 0', display:'flex', boxShadow:'0 4px 12px rgba(128,0,255,0.15)'}}>
+            <img src={`https://img.youtube.com/vi/${v.id}/mqdefault.jpg`} style={{width:'100px', borderRadius:'12px', border:'2px solid #8000FF'}}/>
+            <div style={{marginLeft:'12px'}}>
+              <b>{v.title}</b><br/>
+              <small style={{color:'#666'}}>{v.channel}</small><br/>
+              <span style={{color:'#8000FF', fontWeight:'bold', fontSize:'16px'}}>x{v.times}</span>
+            </div>
+          </div>
+        </a>
       ))}
 
       {/* Bottom Nav */}
-      <nav style={{position:'fixed', bottom:0, left:0, right:0, background:'white', borderTop:'1px solid #ddd', display:'flex', justifyContent:'space-around', padding:'10px'}}>
-        <Link href="/">Home</Link><Link href="/missions">Missions</Link><Link href="/music">Music</Link><Link href="/history">History</Link><Link href="/settings">Settings</Link>
+      <nav style={{position:'fixed', bottom:0, left:0, right:0, background:'white', borderTop:'2px solid #E0D4FF', display:'flex', justifyContent:'space-around', padding:'12px', boxShadow:'0 -4px 10px rgba(0,0,0,0.05)'}}>
+        <a href="/" style={{color:'#8000FF', fontWeight:'bold', textDecoration:'none'}}>Home</a>
+        <a href="/missions" style={{color:'#888', textDecoration:'none'}}>Missions</a>
+        <a href="/music" style={{color:'#888', textDecoration:'none'}}>Music</a>
+        <a href="/history" style={{color:'#888', textDecoration:'none'}}>History</a>
+        <a href="/settings" style={{color:'#888', textDecoration:'none'}}>Settings</a>
       </nav>
     </main>
   )
