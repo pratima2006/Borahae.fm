@@ -1,23 +1,44 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const [pfp, setPfp] = useState("");
-  
+  const [playingVid, setPlayingVid] = useState(null);
+
+  // PFP ko localStorage me save karenge taaki refresh pe na jaye
+  useEffect(()=>{
+    const saved = localStorage.getItem("borahae_pfp");
+    if(saved) setPfp(saved);
+  },[])
+
+  const handlePfpChange = (e)=>{
+    const file = e.target.files[0];
+    if(file){
+      const url = URL.createObjectURL(file);
+      setPfp(url);
+      localStorage.setItem("borahae_pfp", url); // save ho gaya
+    }
+  }
+
+  // SAHI VIDEO IDs - ye BTS/BangtanTV ke official hain
   const recentVids = [
-    {id: "gdZLi9oWNsA", title: "Dynamite", channel: "BANGTANTV", times: 7},
-    {id: "7C2z4GqqS5E", title: "Seven", channel: "Jungkook", times: 12},
-    {id: "XQO9E-TwYrw", title: "Boy With Luv", channel: "BANGTANTV", times: 3},
+    {id: "gdZLi9oWNsA", title: "Dynamite", channel: "BANGTANTV", times: 7}, // Sahi
+    {id: "QbN1wWJcQjE", title: "Seven - Jungkook", channel: "Jungkook", times: 12}, // Ye JK ka official hai
+    {id: "XQO9E-TwYrw", title: "Boy With Luv", channel: "BANGTANTV", times: 3}, // Sahi
   ];
 
   return (
-    <main style={{background:'linear-gradient(180deg, #F5F0FF 0%, #FFFFFF 100%)', minHeight:'100vh', padding:'16px', fontFamily:'Poppins'}}>
+    <main style={{background:'linear-gradient(180deg, #F5F0FF 0%, #FFFFFF 100%)', minHeight:'100vh', padding:'16px 16px 80px 16px', fontFamily:'Poppins'}}>
       <h1 style={{color:'#8000FF', fontWeight:'bold', fontSize:'24px', textAlign:'center'}}>borahae.fm 💜</h1>
 
-      {/* PFP - chota kiya */}
+      {/* PFP */}
       <div style={{textAlign:'center', margin:'20px 0'}}>
-        <img src={pfp || "https://i.pravatar.cc/100"} style={{width:'80px', height:'80px', borderRadius:'50%', border:'4px solid #8000FF', boxShadow:'0 0 15px #8000FF'}} />
-        <p style={{fontSize:'12px', color:'#666', marginTop:'5px'}}>Settings me PFP change karo</p>
+        <img src={pfp || "https://via.placeholder.com/80/CCCCCC/FFFFFF?text=PFP"} style={{width:'80px', height:'80px', borderRadius:'50%', border:'4px solid #8000FF', boxShadow:'0 0 15px #8000FF', objectFit:'cover'}} />
+        <br/>
+        <label style={{background:'#8000FF', color:'white', padding:'6px 12px', borderRadius:'8px', fontSize:'12px', cursor:'pointer', marginTop:'8px', display:'inline-block'}}>
+          PFP Change
+          <input type="file" onChange={handlePfpChange} style={{display:'none'}}/>
+        </label>
       </div>
 
       {/* 4 Purple Boxes */}
@@ -30,23 +51,40 @@ export default function Home() {
         ))}
       </div>
 
+      {/* VIDEO PLAYER POPUP */}
+      {playingVid && (
+        <div style={{position:'fixed', top:0, left:0, right:0, bottom:0, background:'rgba(0,0,0,0.8)', zIndex:999, display:'flex', alignItems:'center', justifyContent:'center'}} onClick={()=>setPlayingVid(null)}>
+          <div style={{width:'95%', maxWidth:'500px', background:'black', borderRadius:'16px', border:'3px solid #8000FF'}} onClick={(e)=>e.stopPropagation()}>
+            <iframe
+              width="100%"
+              height="250"
+              src={`https://www.youtube.com/embed/${playingVid}?autoplay=1`}
+              title="YouTube video player"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              style={{borderRadius:'13px'}}
+            ></iframe>
+            <button onClick={()=>setPlayingVid(null)} style={{width:'100%', background:'#8000FF', color:'white', border:'none', padding:'10px', borderRadius:'0 0 13px 13px'}}>Close</button>
+          </div>
+        </div>
+      )}
+
       <h2 style={{fontWeight:'bold', color:'#333'}}>Recently Streamed</h2>
       {recentVids.map(v => (
-        <a key={v.id} href={`https://youtube.com/watch?v=${v.id}`} target="_blank" 
-           style={{textDecoration:'none', color:'black'}}>
-          <div style={{background:'white', border:'2px solid #8000FF', borderRadius:'16px', padding:'12px', margin:'12px 0', display:'flex', boxShadow:'0 4px 12px rgba(128,0,255,0.15)'}}>
-            <img src={`https://img.youtube.com/vi/${v.id}/mqdefault.jpg`} style={{width:'100px', borderRadius:'12px', border:'2px solid #8000FF'}}/>
-            <div style={{marginLeft:'12px'}}>
-              <b>{v.title}</b><br/>
-              <small style={{color:'#666'}}>{v.channel}</small><br/>
-              <span style={{color:'#8000FF', fontWeight:'bold', fontSize:'16px'}}>x{v.times}</span>
-            </div>
+        <div key={v.id} onClick={()=>setPlayingVid(v.id)} // Yaha click pe app ke andar khulega
+             style={{background:'white', border:'2px solid #8000FF', borderRadius:'16px', padding:'12px', margin:'12px 0', display:'flex', boxShadow:'0 4px 12px rgba(128,0,255,0.15)', cursor:'pointer'}}>
+          <img src={`https://img.youtube.com/vi/${v.id}/mqdefault.jpg`} style={{width:'100px', borderRadius:'12px', border:'2px solid #8000FF'}}/>
+          <div style={{marginLeft:'12px'}}>
+            <b>{v.title}</b><br/>
+            <small style={{color:'#666'}}>{v.channel}</small><br/>
+            <span style={{color:'#8000FF', fontWeight:'bold', fontSize:'16px'}}>x{v.times}</span>
           </div>
-        </a>
+        </div>
       ))}
 
       {/* Bottom Nav */}
-      <nav style={{position:'fixed', bottom:0, left:0, right:0, background:'white', borderTop:'2px solid #E0D4FF', display:'flex', justifyContent:'space-around', padding:'12px', boxShadow:'0 -4px 10px rgba(0,0,0,0.05)'}}>
+      <nav style={{position:'fixed', bottom:0, left:0, right:0, background:'white', borderTop:'2px solid #E0D4FF', display:'flex', justifyContent:'space-around', padding:'12px'}}>
         <a href="/" style={{color:'#8000FF', fontWeight:'bold', textDecoration:'none'}}>Home</a>
         <a href="/missions" style={{color:'#888', textDecoration:'none'}}>Missions</a>
         <a href="/music" style={{color:'#888', textDecoration:'none'}}>Music</a>
