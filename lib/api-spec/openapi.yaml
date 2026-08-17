@@ -1,0 +1,271 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: profile
+    description: Current ARMY profile
+  - name: dashboard
+    description: Home dashboard
+  - name: videos
+    description: Mission and community videos
+  - name: history
+    description: Watch history and stream counts
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /profile:
+    get:
+      operationId: getProfile
+      tags: [profile]
+      summary: Get the signed-in user's profile
+      responses:
+        "200":
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+    put:
+      operationId: saveProfile
+      tags: [profile]
+      summary: Save the signed-in user's profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileInput"
+      responses:
+        "200":
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [dashboard]
+      summary: Get home dashboard data
+      responses:
+        "200":
+          description: Dashboard
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dashboard"
+  /missions:
+    get:
+      operationId: listMissions
+      tags: [videos]
+      summary: List starter missions
+      responses:
+        "200":
+          description: Missions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Video"
+  /videos:
+    get:
+      operationId: listVideos
+      tags: [videos]
+      summary: Search and list videos
+      parameters:
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Videos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Video"
+    post:
+      operationId: addVideo
+      tags: [videos]
+      summary: Fetch YouTube metadata and add a video
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VideoInput"
+      responses:
+        "201":
+          description: Video
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Video"
+  /history:
+    get:
+      operationId: listHistory
+      tags: [history]
+      summary: List watch history and leaderboard
+      parameters:
+        - name: member
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: History
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HistoryResponse"
+    post:
+      operationId: recordStream
+      tags: [history]
+      summary: Record a completed YouTube stream
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StreamInput"
+      responses:
+        "201":
+          description: Stream record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HistoryEntry"
+  /history/{videoId}:
+    delete:
+      operationId: deleteHistory
+      tags: [history]
+      summary: Remove a video from recent history
+      parameters:
+        - name: videoId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    Profile:
+      type: object
+      required: [id, email, name, avatarUrl, joinedAt]
+      properties:
+        id: { type: string }
+        email: { type: string }
+        name: { type: string }
+        avatarUrl: { type: string }
+        joinedAt: { type: string, format: date-time }
+    ProfileInput:
+      type: object
+      required: [email, name, avatarUrl]
+      properties:
+        email: { type: string }
+        name: { type: string }
+        avatarUrl: { type: string }
+    Video:
+      type: object
+      required: [id, youtubeId, title, thumbnailUrl, channelTitle, durationSeconds, viewCount, isMission, addedAt, isNew]
+      properties:
+        id: { type: string }
+        youtubeId: { type: string }
+        title: { type: string }
+        thumbnailUrl: { type: string }
+        channelTitle: { type: string }
+        durationSeconds: { type: number }
+        viewCount: { type: number }
+        isMission: { type: boolean }
+        addedAt: { type: string, format: date-time }
+        isNew: { type: boolean }
+    VideoInput:
+      type: object
+      required: [url]
+      properties:
+        url: { type: string, minLength: 1 }
+    HistoryEntry:
+      type: object
+      required: [id, videoId, youtubeId, title, thumbnailUrl, member, watchedAt, streamCount]
+      properties:
+        id: { type: string }
+        videoId: { type: string }
+        youtubeId: { type: string }
+        title: { type: string }
+        thumbnailUrl: { type: string }
+        member: { type: string }
+        watchedAt: { type: string, format: date-time }
+        streamCount: { type: number }
+    StreamInput:
+      type: object
+      required: [videoId, youtubeId, title, thumbnailUrl, member]
+      properties:
+        videoId: { type: string }
+        youtubeId: { type: string }
+        title: { type: string }
+        thumbnailUrl: { type: string }
+        member: { type: string }
+    LeaderboardEntry:
+      type: object
+      required: [member, streams]
+      properties:
+        member: { type: string }
+        streams: { type: number }
+    Dashboard:
+      type: object
+      required: [profile, continueWatching, totalStreams, todayStreams, dailyGoal, leaderboard]
+      properties:
+        profile: { $ref: "#/components/schemas/Profile" }
+        continueWatching:
+          type: array
+          items: { $ref: "#/components/schemas/HistoryEntry" }
+        totalStreams: { type: number }
+        todayStreams: { type: number }
+        dailyGoal: { type: number }
+        leaderboard:
+          type: array
+          items: { $ref: "#/components/schemas/LeaderboardEntry" }
+    HistoryResponse:
+      type: object
+      required: [entries, leaderboard]
+      properties:
+        entries:
+          type: array
+          items: { $ref: "#/components/schemas/HistoryEntry" }
+        leaderboard:
+          type: array
+          items: { $ref: "#/components/schemas/LeaderboardEntry" }
+
