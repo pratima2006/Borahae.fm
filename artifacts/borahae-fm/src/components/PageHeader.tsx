@@ -1,0 +1,3 @@
+export function PageHeader({ eyebrow, title, body, action }: { eyebrow: string; title: string; body: string; action?: React.ReactNode }) {
+  return <div className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="mb-2 font-mono text-[10px] font-medium uppercase tracking-[.2em] text-primary">{eyebrow}</p><h1 className="font-display text-4xl leading-[1.05] tracking-[-.03em] sm:text-5xl" data-testid="text-page-title">{title}</h1><p className="mt-3 max-w-xl text-sm leading-6 text-muted-foreground">{body}</p></div>{action}</div>;
+}
