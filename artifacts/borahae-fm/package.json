@@ -77,7 +77,6 @@
   "dependencies": {
     "@clerk/react": "^6.12.10",
     "@clerk/themes": "^2.4.57"
-  }
 }
 "devDependencies": {
     "@hookform/resolvers": "^3.10.0",
