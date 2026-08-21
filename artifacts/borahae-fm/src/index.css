@@ -104,3 +104,8 @@
 
 .cl-rootBox { font-family: var(--app-font-sans); }
 .cl-cardBox { border: 1px solid hsl(var(--border)); box-shadow: 0 22px 70px hsl(270 43% 32% / .16); }
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
