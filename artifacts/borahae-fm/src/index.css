@@ -1,6 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tumhara purana CSS yaha niche likh do */
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap');
-@import 'tailwindcss';
-@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -105,7 +113,3 @@
 .cl-rootBox { font-family: var(--app-font-sans); }
 .cl-cardBox { border: 1px solid hsl(var(--border)); box-shadow: 0 22px 70px hsl(270 43% 32% / .16); }
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
