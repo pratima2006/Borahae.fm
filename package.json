@@ -1,11 +1,6 @@
 {
   "name": "borahae-fm-monorepo",
   "private": true,
-  "packageManager": "pnpm@9.0.0",
-  "workspaces": [
-    "artifacts/*"
-  ],
-  "devDependencies": {
-    "vite": "^5.4.21"
-  }
+  "packageManager": "pnpm@9.15.4",
+  "workspaces": ["artifacts/*"]
 }
